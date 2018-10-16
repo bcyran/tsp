@@ -52,6 +52,8 @@ Path &Path::operator=(const Path &src) {
         path = new int[length];
         memcpy(path, src.path, sizeof(src.path[0]) * length);
     }
+
+    return *this;
 }
 
 /**
