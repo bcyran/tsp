@@ -193,5 +193,5 @@ int TSPExact::HeldKarp(int city, int set, int **mem, int fullSet) {
         }
     }
 
-    return minDist;
+    return mem[city][set] = minDist;
 }
