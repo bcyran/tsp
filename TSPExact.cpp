@@ -39,7 +39,7 @@ unsigned long int TSPExact::factorial(int x) {
 Path TSPExact::solveBF() {
     // Array with numbers of cities
     // Additional index for return to the starting point
-    int *cities = new int[size + 1];
+    auto cities = new int[size + 1];
     for (int i = 0; i < size; ++i) {
         cities[i] = i;
     }
@@ -47,7 +47,7 @@ Path TSPExact::solveBF() {
 
     // Array of permutations
     unsigned long int perNum = factorial(size - 1);
-    Path *paths = new Path[perNum];
+    auto paths = new Path[perNum];
 
     // Generate all permutations
     for (unsigned long int i = 0; i < perNum; ++i) {
@@ -141,12 +141,12 @@ Path TSPExact::solveDP() {
     // Resulting path
     Path resPath = Path(size + 1);
     // Number of subproblems
-    int spNum = (1 << size);
+    unsigned int spNum = 1u << (unsigned) size;
     // Full set mask
-    int fullSet = spNum - 1;
+    unsigned int fullSet = spNum - 1;
     // Memoization matrix of distances for combinations of sets and cities
-    int **mem = new int *[size];
-    int **prev = new int *[size];
+    auto mem = new int *[size];
+    auto prev = new int *[size];
     for (int i = 0; i < size; ++i) {
         mem[i] = new int[spNum];
         fill(mem[i], mem[i] + spNum, -1);
@@ -160,13 +160,13 @@ Path TSPExact::solveDP() {
 
     // Retrace path of the recursion using prev array
     int city = 0;
-    int set = 1;
+    unsigned int set = 1;
     int i = 0;
     while (true) {
         resPath.setPoint(i, city);
         city = prev[city][set];
         if (city == -1) break;
-        set = set | (1 << city);
+        set = set | (1u << (unsigned) city);
         ++i;
     }
     resPath.setPoint(++i, 0);
@@ -183,7 +183,7 @@ Path TSPExact::solveDP() {
  * @param fullSet Full set.
  * @return Min path for given input.
  */
-int TSPExact::HeldKarp(int city, int set, int **mem, int **prev, int fullSet) {
+int TSPExact::HeldKarp(int city, unsigned int set, int **mem, int **prev, unsigned int fullSet) {
     // If all nodes are visited
     if (set == fullSet) {
         return distance[city][0];
@@ -200,7 +200,7 @@ int TSPExact::HeldKarp(int city, int set, int **mem, int **prev, int fullSet) {
 
     // Iterate through all unvisited cities
     for (int i = 0; i < size; ++i) {
-        int mask = 1 << i;
+        unsigned int mask = 1u << (unsigned) i;
 
         // If i city wasn't visited
         if (!(set & mask)) {
