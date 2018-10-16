@@ -146,6 +146,7 @@ string Path::toString() {
     for (int i = 0; i < length; ++i) {
         output << path[i] << (i < length - 1 ? " - " : "");
     }
+    output << " (" << distance << ")";
 
     return output.str();
 }
