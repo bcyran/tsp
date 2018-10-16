@@ -136,23 +136,40 @@ Path TSPExact::solveBnB() {
  * @return The shortest possible cycle.
  */
 Path TSPExact::solveDP() {
+    // Resulting path
+    Path resPath = Path(size + 1);
     // Number of subproblems
     int spNum = (1 << size);
     // Full set mask
     int fullSet = spNum - 1;
     // Memoization matrix of distances for combinations of sets and cities
     int **mem = new int *[size];
+    int **prev = new int *[size];
     for (int i = 0; i < size; ++i) {
         mem[i] = new int[spNum];
         fill(mem[i], mem[i] + spNum, -1);
+        prev[i] = new int[spNum];
+        fill(prev[i], prev[i] + spNum, -1);
     }
 
-    int result = HeldKarp(0, 1, mem, fullSet);
-    cout << result << endl;
+    // Run Held Karp algorithm
+    int result = HeldKarp(0, 1, mem, prev, fullSet);
+    resPath.setDistance(result);
 
-    // TODO Make Held Karp algorithm keep track of path
+    // Retrace path of the recursion using prev array
+    int city = 0;
+    int set = 1;
+    int i = 0;
+    while (true) {
+        resPath.setPoint(i, city);
+        city = prev[city][set];
+        if (city == -1) break;
+        set = set | (1 << city);
+        ++i;
+    }
+    resPath.setPoint(++i, 0);
 
-    return Path();
+    return resPath;
 }
 
 /**
@@ -164,7 +181,7 @@ Path TSPExact::solveDP() {
  * @param fullSet Full set.
  * @return Min path for given input.
  */
-int TSPExact::HeldKarp(int city, int set, int **mem, int fullSet) {
+int TSPExact::HeldKarp(int city, int set, int **mem, int **prev, int fullSet) {
     // If all nodes are visited
     if (set == fullSet) {
         return distance[city][0];
@@ -175,8 +192,9 @@ int TSPExact::HeldKarp(int city, int set, int **mem, int fullSet) {
         return mem[city][set];
     }
 
-    // Current distance
+    // Current minimum distance and city
     int minDist = INT_MAX;
+    int minCity = -1;
 
     // Iterate through all unvisited cities
     for (int i = 0; i < size; ++i) {
@@ -185,13 +203,15 @@ int TSPExact::HeldKarp(int city, int set, int **mem, int fullSet) {
         // If i city wasn't visited
         if (!(set & mask)) {
             // Enter next recursion level with masked current node
-            int dist = distance[city][i] + HeldKarp(i, set | mask, mem, fullSet);
+            int dist = distance[city][i] + HeldKarp(i, set | mask, mem, prev, fullSet);
             // If new distance is shorter than current min set it as min
             if (dist < minDist) {
                 minDist = dist;
+                minCity = i;
             }
         }
     }
 
+    prev[city][set] = minCity;
     return mem[city][set] = minDist;
 }

@@ -4,10 +4,8 @@
 
 int main() {
     TSPExact tsp;
-    tsp.load("../dane/tsp_6_2.txt");
+    tsp.load("../dane/tsp_6_1.txt");
     cout << tsp.toString();
     Path solution = tsp.solveDP();
     cout << solution.toString();
-
-
 }

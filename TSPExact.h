@@ -25,7 +25,7 @@ public:
 
     Path solveDP();
 
-    int HeldKarp(int start, int set, int **mem, int fullSet);
+    int HeldKarp(int start, int set, int **mem, int **prev, int fullSet);
 
 };
 
