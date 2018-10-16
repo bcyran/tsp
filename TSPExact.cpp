@@ -66,6 +66,7 @@ Path TSPExact::solveBF() {
             minDist = tmpDist;
         }
     }
+    minPath.setDistance(dist(minPath));
 
     return minPath;
 }
@@ -126,6 +127,7 @@ Path TSPExact::solveBnB() {
             queue.pushBack(nextNode);
         }
     }
+    minPath.setDistance(dist(minPath));
 
     return minPath;
 }
