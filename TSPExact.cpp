@@ -68,6 +68,10 @@ Path TSPExact::solveBF() {
     }
     minPath.setDistance(dist(minPath));
 
+    // Free the memory
+    delete[] cities;
+    delete[] paths;
+
     return minPath;
 }
 
@@ -170,6 +174,14 @@ Path TSPExact::solveDP() {
         ++i;
     }
     resPath.setPoint(++i, 0);
+
+    // Free the memory
+    for (int i = 0; i < size; ++i) {
+        delete[] mem[i];
+        delete[] prev[i];
+    }
+    delete[] mem;
+    delete[] prev;
 
     return resPath;
 }
