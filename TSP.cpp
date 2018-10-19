@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-#include <string.h>
+#include <cstring>
 #include <random>
 #include "TSP.h"
 #include "Path.h"
@@ -67,6 +67,10 @@ int TSP::dist(Path path) {
 void TSP::load(string file) {
     ifstream input;
     input.open(file);
+
+    if (!input.is_open()) {
+        throw invalid_argument("Requested file does not exist.");
+    }
 
     input >> size;
     initialize(size);

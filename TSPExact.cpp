@@ -37,6 +37,10 @@ unsigned long int TSPExact::factorial(int x) {
  * @return The shortest possible cycle.
  */
 Path TSPExact::solveBF() {
+    if (size <= 0 || distance == nullptr) {
+        throw runtime_error("Cannot solve empty problem.");
+    }
+
     // Array with numbers of cities
     // Additional index for return to the starting point
     auto cities = new int[size + 1];
@@ -81,6 +85,10 @@ Path TSPExact::solveBF() {
  * @return The shortest possible cycle.
  */
 Path TSPExact::solveBnB() {
+    if (size <= 0 || distance == nullptr) {
+        throw runtime_error("Cannot solve empty problem.");
+    }
+
     // Shortest path
     Path minPath;
     // Minimal distance
@@ -142,6 +150,10 @@ Path TSPExact::solveBnB() {
  * @return The shortest possible cycle.
  */
 Path TSPExact::solveDP() {
+    if (size <= 0 || distance == nullptr) {
+        throw runtime_error("Cannot solve empty problem.");
+    }
+
     // Resulting path
     Path resPath = Path(size + 1);
     // Number of subproblems
