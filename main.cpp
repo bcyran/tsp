@@ -126,7 +126,7 @@ void repl() {
                 cerr << e.what() << endl;
             }
         } else if (command == "m") {
-            measure(parameter1, stoi(parameter2), stoi(parameter2));
+            measure(parameter1, stoi(parameter2), stoi(parameter3));
         } else if (command == "q") {
             break;
         }
