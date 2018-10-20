@@ -17,6 +17,8 @@ class TSPExact : public TSP {
 
     unsigned long int factorial(int x);
 
+    int HeldKarp(int start, unsigned int set, int **mem, int **prev, unsigned int fullSet);
+
 public:
 
     Path solveBF();
@@ -24,8 +26,6 @@ public:
     Path solveBnB();
 
     Path solveDP();
-
-    int HeldKarp(int start, unsigned int set, int **mem, int **prev, unsigned int fullSet);
 
 };
 
