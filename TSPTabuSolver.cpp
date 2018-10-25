@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <vector>
 #include <iostream>
-#include "TSPLocal.h"
+#include "TSPTabuSolver.h"
 
 /**
  * Solves TSP using greedy algorithm.
@@ -15,30 +15,30 @@
  *
  * @return The greedy solution.
  */
-Path TSPLocal::solveGreedy() {
-    Path path = Path(size + 1);
+Path TSPTabuSolver::solveGreedy() {
+    Path path = Path(tsp.getSize() + 1);
     path.setPoint(0, 0);
-    path.setPoint(size, 0);
+    path.setPoint(tsp.getSize(), 0);
 
     // For each stop in the path
-    for (int i = 1; i < size; ++i) {
+    for (int i = 1; i < tsp.getSize(); ++i) {
         int prev = path.getPoint(i - 1);
         int minDist = INT_MAX;
 
         // Check all connections to different cities
-        for (int j = 1; j < size; ++j) {
+        for (int j = 1; j < tsp.getSize(); ++j) {
             // Skip iteration if this city is already in path
             if (path.inPath(j, i)) continue;
 
             // If this distance is lower than current minimum set it as minimum
-            if (distance[prev][j] < minDist) {
-                minDist = distance[prev][j];
+            if (tsp.dist(prev, j) < minDist) {
+                minDist = tsp.dist(prev, j);
                 path.setPoint(i, j);
             }
         }
     }
 
-    path.setDistance(dist(path));
+    path.setDistance(tsp.pathDist(path));
 
     return path;
 }
@@ -51,23 +51,23 @@ Path TSPLocal::solveGreedy() {
  * @param cadence Tabu cadence.
  * @return Best neighbour path of given path.
  */
-Path TSPLocal::minNeighbour(Path path, int **tabu, int cadence) {
+Path TSPTabuSolver::minNeighbour(Path path, int **tabu, int cadence) {
     // Current minimum neighbour path
-    Path minNeigh = Path(size + 1);
+    Path minNeigh = Path(tsp.getSize() + 1);
     minNeigh.setDistance(INT_MAX);
     // Indexes of swap of the best neighbour
     pair<int, int> bestSwap;
 
     // Iterate through all possible city swaps (neighbours)
-    for (int i = 1; i < size - 1; ++i) {
-        for (int j = 1; j < size - 1; ++j) {
+    for (int i = 1; i < tsp.getSize() - 1; ++i) {
+        for (int j = 1; j < tsp.getSize() - 1; ++j) {
             // If this swap is tabu skip it
             if (tabu[i][j]) continue;
 
             // Perform the swap
             Path curNeigh = path;
             curNeigh.swap(i, j);
-            curNeigh.setDistance(dist(curNeigh));
+            curNeigh.setDistance(tsp.pathDist(curNeigh));
 
             // If resulting path is better than current minimum set it as minimum and save swap indexes
             if (curNeigh.getDistance() < minNeigh.getDistance()) {
@@ -88,9 +88,9 @@ Path TSPLocal::minNeighbour(Path path, int **tabu, int cadence) {
  *
  * @param tabu Pointer to the tabu list.
  */
-void TSPLocal::updateTabu(int **tabu) {
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
+void TSPTabuSolver::updateTabu(int **tabu) {
+    for (int i = 0; i < tsp.getSize(); ++i) {
+        for (int j = 0; j < tsp.getSize(); ++j) {
             if (tabu[i][j]) --tabu[i][j];
         }
     }
@@ -101,24 +101,20 @@ void TSPLocal::updateTabu(int **tabu) {
  *
  * @return The resulting path.
  */
-Path TSPLocal::solveTabu() {
-    if (size <= 0 || distance == nullptr) {
+Path TSPTabuSolver::solve() {
+    if (tsp.empty()) {
         throw runtime_error("Cannot solve empty problem.");
     }
-
-    // Number of iterations
-    int iterations = 3000;
-    int cadence = 5;
 
     // Working path
     Path curPath = solveGreedy();
     // Current minimum path
     Path minPath = curPath;
     // Tabu list
-    auto **tabu = new int*[size];
-    for (int i = 0; i < size; ++i) {
-        tabu[i] = new int[size];
-        fill(tabu[i], tabu[i] + size, 0);
+    auto **tabu = new int*[tsp.getSize()];
+    for (int i = 0; i < tsp.getSize(); ++i) {
+        tabu[i] = new int[tsp.getSize()];
+        fill(tabu[i], tabu[i] + tsp.getSize(), 0);
     }
 
     // Try specified number of times
@@ -136,4 +132,22 @@ Path TSPLocal::solveTabu() {
     }
 
     return minPath;
+}
+
+/**
+ * Sets number of neighbour looking cycles.
+ *
+ * @param iterations Number of iterations.
+ */
+void TSPTabuSolver::setIterations(int iterations) {
+    TSPTabuSolver::iterations = iterations;
+}
+
+/**
+ * Sets tabu cadence.
+ *
+ * @param cadence Tabu cadence.
+ */
+void TSPTabuSolver::setCadence(int cadence) {
+    TSPTabuSolver::cadence = cadence;
 }

@@ -26,6 +26,39 @@ TSP::~TSP() {
 }
 
 /**
+ * Copy constructor.
+ *
+ * @param src Source TSP object.
+ */
+TSP::TSP(const TSP &src) : size(src.size) {
+    this->distance = new int*[size];
+    for (int i = 0; i < size; ++i) {
+        this->distance[i] = new int[size];
+        memcpy(this->distance[i], src.distance[i], sizeof(src.distance[i][0]) * size);
+    }
+}
+
+/**
+ * Assignment operator.
+ *
+ * @param obj Source TSP object.
+ * @return Assigned object.
+ */
+TSP &TSP::operator=(const TSP &src) {
+    if (this != &src) {
+        delete[] distance;
+        size = src.size;
+        this->distance = new int*[size];
+        for (int i = 0; i < size; ++i) {
+            this->distance[i] = new int[size];
+            memcpy(this->distance[i], src.distance[i], sizeof(src.distance[i][0]) * size);
+        }
+    }
+
+    return *this;
+}
+
+/**
  * Initializes empty distance matrix of given size.
  *
  * @param size Number of cities.
@@ -41,22 +74,6 @@ void TSP::initialize(int size) {
             distance[i][j] = 0;
         }
     }
-}
-
-/**
- * Calculates distance of given path.
- *
- * @param path Path object.
- * @return Distance of path.
- */
-int TSP::dist(Path path) {
-    int dist = 0;
-
-    for (int i = 0; i < path.getLength() - 1; ++i) {
-        dist += distance[path.getPoint(i)][path.getPoint(i + 1)];
-    }
-
-    return dist;
 }
 
 /**
@@ -103,6 +120,51 @@ void TSP::random(int size) {
             distance[i][j] = distRange(r);
         }
     }
+}
+
+/**
+ * Get distance between two cities.
+ *
+ * @param i Start city.
+ * @param j End city.
+ * @return Distance between cities.
+ */
+int TSP::dist(int i, int j) {
+    return distance[i][j];
+}
+
+/**
+ * Calculates distance of given path.
+ *
+ * @param path Path object.
+ * @return Distance of path.
+ */
+int TSP::pathDist(Path path) {
+    int dist = 0;
+
+    for (int i = 0; i < path.getLength() - 1; ++i) {
+        dist += distance[path.getPoint(i)][path.getPoint(i + 1)];
+    }
+
+    return dist;
+}
+
+/**
+ * Getter for size.
+ *
+ * @return Size of the problem.
+ */
+int TSP::getSize() const {
+    return size;
+}
+
+/**
+ * Checks if problem is empty.
+ *
+ * @return True if problem is empty.
+ */
+bool TSP::empty() {
+    return size <= 0 || distance == nullptr;
 }
 
 /**

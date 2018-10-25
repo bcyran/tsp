@@ -85,4 +85,5 @@ void TimeTester::setPostTestFn(fn postTestFn) {
  */
 void TimeTester::setTestNum(int testNum) {
     TimeTester::testNum = testNum;
+    cout << this->testNum << endl;
 }

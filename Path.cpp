@@ -107,13 +107,13 @@ bool Path::permute(int start, int end) {
     }
 
     // Swap out i and j
-    swap(path[i], path[j]);
+    std::swap(path[i], path[j]);
 
     // Reverse cities from j+1 to length-1
     int lo = i + 1;
     int hi = end;
     while (lo < hi) {
-        swap(path[lo], path[hi]);
+        std::swap(path[lo], path[hi]);
         ++lo;
         --hi;
     }

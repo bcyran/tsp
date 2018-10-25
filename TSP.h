@@ -15,8 +15,6 @@ using namespace std;
  */
 class TSP {
 
-protected:
-
     /** Size of the problem (number of the cities). */
     int size = 0;
 
@@ -25,17 +23,27 @@ protected:
 
     void initialize(int size);
 
-    int dist(Path path);
-
 public:
 
     TSP();
 
     virtual ~TSP();
 
+    TSP(const TSP &src);
+
+    TSP &operator=(const TSP &src);
+
     void load(string file);
 
     void random(int size);
+
+    int dist(int i, int j);
+
+    int pathDist(Path path);
+
+    int getSize() const;
+
+    bool empty();
 
     string toString();
 
