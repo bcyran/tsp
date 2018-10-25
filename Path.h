@@ -38,6 +38,8 @@ public:
 
     bool permute(int start, int end);
 
+    void swap(int x, int y);
+
     int getLength() const;
 
     int getPoint(int index);

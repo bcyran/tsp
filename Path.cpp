@@ -122,6 +122,16 @@ bool Path::permute(int start, int end) {
 }
 
 /**
+ * Swaps cities with given indexes.
+ *
+ * @param x Index of first city to swap.
+ * @param y Index of second city to swap.
+ */
+void Path::swap(int x, int y) {
+    std::swap(path[x], path[y]);
+}
+
+/**
  * Length getter.
  *
  * @return The length.

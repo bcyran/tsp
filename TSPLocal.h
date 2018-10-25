@@ -13,6 +13,16 @@
  */
 class TSPLocal : public TSP {
 
+    Path solveGreedy();
+
+    Path minNeighbour(Path path, int **tabu, int cadence);
+
+    void updateTabu(int **tabu);
+
+public:
+
+    Path solveTabu();
+
 };
 
 
