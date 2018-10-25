@@ -14,24 +14,6 @@
 typedef tuple<int, int, int> node;
 
 /**
- * Helper function calculating factorial value.
- *
- * Unsigned long int should be enough to completely fill most computers' RAM with permutations.
- *
- * @param x Number to calculate the factorial of.
- * @return Factorial of given number.
- */
-unsigned long int TSPExact::factorial(int x) {
-    unsigned long int result = 1;
-
-    for (int i = 1; i <= x; ++i) {
-        result *= i;
-    }
-
-    return result;
-}
-
-/**
  * Solves TSP using brute-force approach.
  *
  * @return The shortest possible cycle.
