@@ -3,10 +3,9 @@
 //
 
 #include <climits>
-#include <algorithm>
 #include <tuple>
+#include <stack>
 #include "TSPExact.h"
-#include "List.h"
 
 /**
  * Node used in branch and bound consists of city number, distance and level.
@@ -61,23 +60,23 @@ Path TSPExact::solveBnB() {
     // Minimal distance
     int minDist = INT_MAX;
     // Nodes queue
-    List<node> queue;
+    stack<node> stack;
     // Current path for each node, additional index for return to start
     Path curPath = Path(size + 1);
     curPath.setPoint(size, 0);
 
-    // Enqueue starting city
-    queue.pushBack(make_tuple(0, 0, 0));
+    // Add starting city to stack
+    stack.push(make_tuple(0, 0, 0));
 
-    // While queue is not empty
-    while (queue.getLength()) {
-        // Get last added city from the queue (LIFO queue)
-        node curNode = queue.get(queue.getLength() - 1);
+    // While stack is not empty
+    while (!stack.empty()) {
+        // Get last added city from the stack
+        node curNode = stack.top();
         int city = get<0>(curNode);
         int dist = get<1>(curNode);
         int level = get<2>(curNode);
         int nextLevel = level + 1; // Level of all children of current node
-        queue.popBack();
+        stack.pop();
         curPath.setPoint(level, city); // Update current path with current node
 
         // If it's last level of the tree
@@ -101,9 +100,9 @@ Path TSPExact::solveBnB() {
             int nextDist = dist + distance[city][i];
             if (nextDist >= minDist) continue;
 
-            // If it's valid insert into queue
+            // If it's valid insert into stack
             node nextNode = make_tuple(i, nextDist, nextLevel);
-            queue.pushBack(nextNode);
+            stack.push(nextNode);
         }
     }
     minPath.setDistance(dist(minPath));
