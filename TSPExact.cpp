@@ -41,40 +41,25 @@ Path TSPExact::solveBF() {
         throw runtime_error("Cannot solve empty problem.");
     }
 
-    // Array with numbers of cities
-    // Additional index for return to the starting point
-    auto cities = new int[size + 1];
+    // Working path that will be permuted
+    Path path = Path(size + 1);
     for (int i = 0; i < size; ++i) {
-        cities[i] = i;
+        path.setPoint(i, i);
     }
-    cities[size] = cities[0];
+    path.setPoint(size, 0);
+    path.setDistance(dist(path));
 
-    // Array of permutations
-    unsigned long int perNum = factorial(size - 1);
-    auto paths = new Path[perNum];
+    // Set min path as current working path
+    Path minPath = path;
 
     // Generate all permutations
-    for (unsigned long int i = 0; i < perNum; ++i) {
-        paths[i] = Path(size + 1, cities);
-        next_permutation(cities, cities + size);
-    }
-
-    // Find shortest path
-    Path minPath = paths[0];
-    int minDist = dist(minPath);
-    int tmpDist = 0;
-    for (unsigned long int i = 1; i < perNum; ++i) {
-        tmpDist = dist(paths[i]);
-        if (tmpDist < minDist) {
-            minPath = paths[i];
-            minDist = tmpDist;
+    while (path.permute(1, size - 1)) {
+        // If generated path is shorter than current minimum set it as minimum
+        path.setDistance(dist(path));
+        if (path.getDistance() < minPath.getDistance()) {
+            minPath = path;
         }
     }
-    minPath.setDistance(dist(minPath));
-
-    // Free the memory
-    delete[] cities;
-    delete[] paths;
 
     return minPath;
 }
