@@ -36,6 +36,8 @@ public:
 
     bool inPath(int city, int limit);
 
+    bool permute(int start, int end);
+
     int getLength() const;
 
     int getPoint(int index);

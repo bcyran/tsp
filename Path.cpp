@@ -82,6 +82,46 @@ bool Path::inPath(int city, int limit) {
 }
 
 /**
+ * Use Knuth's "Algorithm L" to generate next lexicographical permutation of cities.
+ * Works just like next_permutation().
+ *
+ * @param start Start index of permutation.
+ * @param end End index of permutation.
+ * @return True if permutation was successful.
+ */
+bool Path::permute(int start, int end) {
+    // Nothing to do for empty or single city path
+    if (end - start <= 1) return false;
+
+    // Find last i such that path[i] <= path[i+1].
+    // If it doesn't exist path is at final permutation, return false.
+    int i = end - 1;
+    while (path[i] > path[i + 1]) {
+        if (--i == start - 1) return false;
+    }
+
+    // Find last j such that path[i] <= path[j]
+    int j = end;
+    while (path[i] > path[j]) {
+        --j;
+    }
+
+    // Swap out i and j
+    swap(path[i], path[j]);
+
+    // Reverse cities from j+1 to length-1
+    int lo = i + 1;
+    int hi = end;
+    while (lo < hi) {
+        swap(path[lo], path[hi]);
+        ++lo;
+        --hi;
+    }
+
+    return true;
+}
+
+/**
  * Length getter.
  *
  * @return The length.
