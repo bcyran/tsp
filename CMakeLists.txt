@@ -3,4 +3,4 @@ project(C__)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(pea-projekt1 main.cpp TSP.cpp TSP.h Path.cpp Path.h TSPExact.cpp TSPExact.h TimeTester.cpp TimeTester.h)
+add_executable(pea-projekt1 main.cpp TSP.cpp TSP.h Path.cpp Path.h TSPExact.cpp TSPExact.h TimeTester.cpp TimeTester.h TSPLocal.cpp TSPLocal.h)
