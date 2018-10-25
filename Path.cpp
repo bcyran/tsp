@@ -35,7 +35,7 @@ Path::Path(int length, int *path) : length(length), path(new int[length]) {
  *
  * @param src Source Path object.
  */
-Path::Path(const Path &src) : length(src.length), path(new int[src.length]) {
+Path::Path(const Path &src) : length(src.length), distance(src.distance), path(new int[src.length]) {
     memcpy(this->path, src.path, sizeof(src.path[0]) * length);
 }
 
@@ -49,6 +49,7 @@ Path &Path::operator=(const Path &src) {
     if (this != &src) {
         delete[] path;
         length = src.length;
+        distance = src.distance;
         path = new int[length];
         memcpy(path, src.path, sizeof(src.path[0]) * length);
     }
