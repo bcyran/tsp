@@ -20,15 +20,28 @@ class TSPTabuSolver : public TSPSolver {
     /** Tabu cadence. */
     int cadence = 5;
 
+    /** Tabu list. */
+    int **tabu = nullptr;
+
+    void init();
+
+    void clean();
+
     Path solveGreedy();
 
-    Path minNeighbour(Path path, int **tabu, int cadence);
+    Path minNeighbour(Path path);
 
-    void updateTabu(int **tabu);
+    void updateTabu();
 
 public:
 
     using TSPSolver::TSPSolver;
+
+    explicit TSPTabuSolver(TSP tsp);
+
+    virtual ~TSPTabuSolver();
+
+    void setTsp(TSP tsp) override;
 
     Path solve() override;
 

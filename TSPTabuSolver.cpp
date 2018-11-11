@@ -9,6 +9,55 @@
 #include "TSPTabuSolver.h"
 
 /**
+ * Initializes fields.
+ */
+void TSPTabuSolver::init() {
+    tabu = new int*[tsp.getSize()];
+    for (int i = 0; i < tsp.getSize(); ++i) {
+        tabu[i] = new int[tsp.getSize()];
+        fill(tabu[i], tabu[i] + tsp.getSize(), 0);
+    }
+}
+
+/**
+ * Frees up memory.
+ */
+void TSPTabuSolver::clean() {
+    if (tabu) {
+        for (int i = 0; i < tsp.getSize(); ++i) {
+            delete[] tabu[i];
+        }
+        delete[] tabu;
+    }
+}
+
+/**
+ * Creates solver for given TSP instance.
+ *
+ * @param tsp TSP instance.
+ */
+TSPTabuSolver::TSPTabuSolver(TSP tsp) : TSPSolver(tsp) {
+    init();
+}
+
+/**
+ * Frees up memory on object destruction.
+ */
+TSPTabuSolver::~TSPTabuSolver() {
+    clean();
+}
+
+/**
+ * Sets problem instance to the given one and performs initialization.
+ *
+ * @param tsp TSP instance.
+ */
+void TSPTabuSolver::setTsp(TSP tsp) {
+    TSPSolver::setTsp(tsp);
+    init();
+}
+
+/**
  * Solves TSP using greedy algorithm.
  * Greedy algorithm means choosing shortest possible way at every stop.
  * Used as starting path for local search algorithms.
@@ -51,7 +100,7 @@ Path TSPTabuSolver::solveGreedy() {
  * @param cadence Tabu cadence.
  * @return Best neighbour path of given path.
  */
-Path TSPTabuSolver::minNeighbour(Path path, int **tabu, int cadence) {
+Path TSPTabuSolver::minNeighbour(Path path) {
     // Current minimum neighbour path
     Path minNeigh = Path(tsp.getSize() + 1);
     minNeigh.setDistance(INT_MAX);
@@ -88,7 +137,7 @@ Path TSPTabuSolver::minNeighbour(Path path, int **tabu, int cadence) {
  *
  * @param tabu Pointer to the tabu list.
  */
-void TSPTabuSolver::updateTabu(int **tabu) {
+void TSPTabuSolver::updateTabu() {
     for (int i = 0; i < tsp.getSize(); ++i) {
         for (int j = 0; j < tsp.getSize(); ++j) {
             if (tabu[i][j]) --tabu[i][j];
@@ -110,17 +159,11 @@ Path TSPTabuSolver::solve() {
     Path curPath = solveGreedy();
     // Current minimum path
     Path minPath = curPath;
-    // Tabu list
-    auto **tabu = new int*[tsp.getSize()];
-    for (int i = 0; i < tsp.getSize(); ++i) {
-        tabu[i] = new int[tsp.getSize()];
-        fill(tabu[i], tabu[i] + tsp.getSize(), 0);
-    }
 
     // Try specified number of times
     for (int i = 0; i < iterations; ++i) {
         // Find best neighbour of current path
-        curPath = minNeighbour(curPath, tabu, cadence);
+        curPath = minNeighbour(curPath);
 
         // If neighbour is better set it as current minimum
         if (curPath.getDistance() < minPath.getDistance()) {
@@ -128,7 +171,7 @@ Path TSPTabuSolver::solve() {
         }
 
         // Update tabu list
-        updateTabu(tabu);
+        updateTabu();
     }
 
     return minPath;
