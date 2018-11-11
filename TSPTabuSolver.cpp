@@ -128,7 +128,7 @@ Path TSPTabuSolver::minNeighbour(Path path) {
 
             // Perform the move
             Path curNeigh = path;
-            move(path, i, j);
+            move(curNeigh, i, j);
             curNeigh.setDistance(tsp.pathDist(curNeigh));
 
             // If resulting path is better than current minimum set it as minimum and save move indexes

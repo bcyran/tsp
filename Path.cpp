@@ -158,7 +158,7 @@ void Path::insert(int x, int y) {
  */
 void Path::invert(int x, int y) {
     while (x < y) {
-        swap(path[x], path[y]);
+        std::swap(path[x], path[y]);
         ++x;
         --y;
     }
