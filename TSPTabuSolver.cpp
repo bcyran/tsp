@@ -48,16 +48,6 @@ TSPTabuSolver::~TSPTabuSolver() {
 }
 
 /**
- * Sets problem instance to the given one and performs initialization.
- *
- * @param tsp TSP instance.
- */
-void TSPTabuSolver::setTsp(TSP tsp) {
-    TSPSolver::setTsp(tsp);
-    init();
-}
-
-/**
  * Solves TSP using greedy algorithm.
  * Greedy algorithm means choosing shortest possible way at every stop.
  * Used as starting path for local search algorithms.
@@ -93,6 +83,29 @@ Path TSPTabuSolver::solveGreedy() {
 }
 
 /**
+ * Performs chosen 2-city move on given path to obtain paths' neighbour.
+ *
+ * @param path Path to perform the move on.
+ * @param x First city.
+ * @param y Second city.
+ */
+void TSPTabuSolver::move(Path &path, int x, int y) {
+    switch (neighbourhoodType) {
+        case 0:
+            path.swap(x, y);
+            break;
+        case 1:
+            path.insert(x, y);
+            break;
+        case 2:
+            path.invert(x, y);
+            break;
+        default:
+            break;
+    }
+}
+
+/**
  * Returns best neighbour path for given path. Used in tabu search algorithm.
  *
  * @param path Path of which neighbours will be searched.
@@ -105,29 +118,30 @@ Path TSPTabuSolver::minNeighbour(Path path) {
     Path minNeigh = Path(tsp.getSize() + 1);
     minNeigh.setDistance(INT_MAX);
     // Indexes of swap of the best neighbour
-    pair<int, int> bestSwap;
+    pair<int, int> bestMove;
 
-    // Iterate through all possible city swaps (neighbours)
+    // Iterate through all possible 2-city moves
     for (int i = 1; i < tsp.getSize() - 1; ++i) {
         for (int j = 1; j < tsp.getSize() - 1; ++j) {
-            // If this swap is tabu skip it
+            // If this move is tabu skip it
             if (tabu[i][j]) continue;
 
-            // Perform the swap
+            // Perform the move
             Path curNeigh = path;
-            curNeigh.swap(i, j);
+            move(path, i, j);
             curNeigh.setDistance(tsp.pathDist(curNeigh));
 
-            // If resulting path is better than current minimum set it as minimum and save swap indexes
+            // If resulting path is better than current minimum set it as minimum and save move indexes
             if (curNeigh.getDistance() < minNeigh.getDistance()) {
                 minNeigh = curNeigh;
-                bestSwap = {i, j};
+                bestMove = {i, j};
             }
         }
     }
 
     // Tabu performed swap
-    tabu[bestSwap.first][bestSwap.second] = cadence;
+    tabu[bestMove.first][bestMove.second] = cadence;
+    tabu[bestMove.second][bestMove.first] = cadence;
 
     return minNeigh;
 }
@@ -178,6 +192,16 @@ Path TSPTabuSolver::solve() {
 }
 
 /**
+ * Sets problem instance to the given one and performs initialization.
+ *
+ * @param tsp TSP instance.
+ */
+void TSPTabuSolver::setTsp(TSP tsp) {
+    TSPSolver::setTsp(tsp);
+    init();
+}
+
+/**
  * Sets number of neighbour looking cycles.
  *
  * @param iterations Number of iterations.
@@ -193,4 +217,16 @@ void TSPTabuSolver::setIterations(int iterations) {
  */
 void TSPTabuSolver::setCadence(int cadence) {
     TSPTabuSolver::cadence = cadence;
+}
+
+/**
+ * Sets the neighbourhood type:
+ * 0 - swap
+ * 1 - insert
+ * 2 - invert
+ *
+ * @param type Neighbourhood type.
+ */
+void TSPTabuSolver::setNeighbourhoodType(int type) {
+    TSPTabuSolver::neighbourhoodType = type;
 }

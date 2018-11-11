@@ -18,7 +18,10 @@ class TSPTabuSolver : public TSPSolver {
     int iterations = 1000;
 
     /** Tabu cadence. */
-    int cadence = 5;
+    int cadence = 100;
+
+    /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
+    int neighbourhoodType = 0;
 
     /** Tabu list. */
     int **tabu = nullptr;
@@ -28,6 +31,8 @@ class TSPTabuSolver : public TSPSolver {
     void clean();
 
     Path solveGreedy();
+
+    void move(Path &path, int x, int y);
 
     Path minNeighbour(Path path);
 
@@ -41,13 +46,15 @@ public:
 
     virtual ~TSPTabuSolver();
 
-    void setTsp(TSP tsp) override;
-
     Path solve() override;
+
+    void setTsp(TSP tsp) override;
 
     void setIterations(int iterations);
 
     void setCadence(int cadence);
+
+    void setNeighbourhoodType(int type);
 
 };
 

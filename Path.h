@@ -40,6 +40,10 @@ public:
 
     void swap(int x, int y);
 
+    void insert(int x, int y);
+
+    void invert(int x, int y);
+
     int getLength() const;
 
     int getPoint(int index);

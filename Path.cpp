@@ -122,13 +122,46 @@ bool Path::permute(int start, int end) {
 }
 
 /**
- * Swaps cities with given indexes.
+ * Generates paths' neighbour by swapping cities at positions x, y.
  *
- * @param x Index of first city to swap.
- * @param y Index of second city to swap.
+ * @param x Index of the first city.
+ * @param y Index of the second city.
  */
 void Path::swap(int x, int y) {
     std::swap(path[x], path[y]);
+}
+
+/**
+ * Generates paths' neighbour by inserting y city in the place of x.
+ *
+ * @param x Index of the first city.
+ * @param y Index of the second city.
+ */
+void Path::insert(int x, int y) {
+    int newX = path[y];
+    while (y > x) {
+        path[y] = path[y - 1];
+        --y;
+    }
+    while (y < x) {
+        path[y] = path[y + 1];
+        ++y;
+    }
+    path[x] = newX;
+}
+
+/**
+ * Generates paths' neighbour by reversing order of cities between indexes x and y.
+ *
+ * @param x Index of the first city.
+ * @param y Index of the second city.
+ */
+void Path::invert(int x, int y) {
+    while (x < y) {
+        swap(path[x], path[y]);
+        ++x;
+        --y;
+    }
 }
 
 /**
