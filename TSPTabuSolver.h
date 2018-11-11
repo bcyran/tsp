@@ -23,6 +23,9 @@ class TSPTabuSolver : public TSPSolver {
     /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
     int neighbourhoodType = 0;
 
+    /** Number of non-improving solutions before restarting with random path. */
+    int incorrectThreshold = 50;
+
     /** Tabu list. */
     int **tabu = nullptr;
 
@@ -31,6 +34,8 @@ class TSPTabuSolver : public TSPSolver {
     void clean();
 
     Path solveGreedy();
+
+    Path randomPath();
 
     void move(Path &path, int x, int y);
 
@@ -55,6 +60,8 @@ public:
     void setCadence(int cadence);
 
     void setNeighbourhoodType(int type);
+
+    void setIncorrectThreshold(int threshold);
 
 };
 
