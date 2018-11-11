@@ -28,7 +28,7 @@ public:
 
     virtual Path solve() = 0;
 
-    void setTsp(TSP tsp);
+    virtual void setTsp(TSP tsp);
 
     void random(int size);
 };

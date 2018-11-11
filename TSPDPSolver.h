@@ -22,11 +22,21 @@ class TSPDPSolver : public TSPSolver {
     /** Predecessors matrix. */
     int **pred = nullptr;
 
+    void init();
+
+    void clean();
+
     int HeldKarp(int start, unsigned int set);
 
 public:
 
     using TSPSolver::TSPSolver;
+
+    explicit TSPDPSolver(TSP tsp);
+
+    virtual ~TSPDPSolver();
+
+    void setTsp(TSP tsp) override;
 
     Path solve() override;
 

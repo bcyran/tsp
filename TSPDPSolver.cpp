@@ -7,6 +7,67 @@
 #include "TSPDPSolver.h"
 
 /**
+ * Initializes fields.
+ */
+void TSPDPSolver::init() {
+    clean();
+    // Number of subproblems
+    spNum = 1u << (unsigned) tsp.getSize();
+    // Full set mask
+    FULL_SET = spNum - 1;
+    // Memoization matrix of distances for combinations of sets and cities
+    mem = new int *[tsp.getSize()];
+    pred = new int *[tsp.getSize()];
+    for (int i = 0; i < tsp.getSize(); ++i) {
+        mem[i] = new int[spNum];
+        fill(mem[i], mem[i] + spNum, -1);
+        pred[i] = new int[spNum];
+        fill(pred[i], pred[i] + spNum, -1);
+    }
+}
+
+/**
+ * Frees up memory.
+ */
+void TSPDPSolver::clean() {
+    // Delete matrices if they already exist
+    if (mem && pred) {
+        for (int i = 0; i < tsp.getSize(); ++i) {
+            delete[] mem[i];
+            delete[] pred[i];
+        }
+        delete[] mem;
+        delete[] pred;
+    }
+}
+
+/**
+ * Creates solver for given TSP instance.
+ *
+ * @param tsp TSP instance.
+ */
+TSPDPSolver::TSPDPSolver(TSP tsp) : TSPSolver(tsp) {
+    init();
+}
+
+/**
+ * Frees up memory on object destruction.
+ */
+TSPDPSolver::~TSPDPSolver() {
+    clean();
+}
+
+/**
+ * Sets problem instance to the given one and performs initialization.
+ *
+ * @param tsp TSP instance.
+ */
+void TSPDPSolver::setTsp(TSP tsp) {
+    TSPSolver::setTsp(tsp);
+    init();
+}
+
+/**
  * Implements recursive Held-Karp algorithm.
  *
  * @param city Current city.
@@ -60,20 +121,6 @@ Path TSPDPSolver::solve() {
         throw runtime_error("Cannot solve empty problem.");
     }
 
-    // Number of subproblems
-    spNum = 1u << (unsigned) tsp.getSize();
-    // Full set mask
-    FULL_SET = spNum - 1;
-    // Memoization matrix of distances for combinations of sets and cities
-    mem = new int *[tsp.getSize()];
-    pred = new int *[tsp.getSize()];
-    for (int i = 0; i < tsp.getSize(); ++i) {
-        mem[i] = new int[spNum];
-        fill(mem[i], mem[i] + spNum, -1);
-        pred[i] = new int[spNum];
-        fill(pred[i], pred[i] + spNum, -1);
-    }
-
     // Resulting path
     Path resPath = Path(tsp.getSize() + 1);
 
@@ -93,14 +140,6 @@ Path TSPDPSolver::solve() {
         ++i;
     }
     resPath.setPoint(++i, 0);
-
-    // Free the memory
-    for (int i = 0; i < tsp.getSize(); ++i) {
-        delete[] mem[i];
-        delete[] pred[i];
-    }
-    delete[] mem;
-    delete[] pred;
 
     return resPath;
 }
