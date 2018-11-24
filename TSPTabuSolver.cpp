@@ -105,6 +105,8 @@ Path TSPTabuSolver::randomPath() {
         path.swap(i, range(r));
     }
 
+    path.setDistance(tsp.pathDist(path));
+
     return path;
 }
 
