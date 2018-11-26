@@ -217,7 +217,7 @@ Path TSPTabuSolver::solve() {
             ++incorrectCount;
 
             // If count of incorrect solutions exceeds the threshold then restart with random path
-            if (incorrectCount >= incorrectThreshold) {
+            if (incorrectThreshold && incorrectCount >= incorrectThreshold) {
                 curPath = randomPath();
                 clean();
                 init();
