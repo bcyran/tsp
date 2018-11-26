@@ -18,13 +18,16 @@ class TSPTabuSolver : public TSPSolver {
     int iterations = 1000;
 
     /** Tabu cadence. */
-    int cadence = 100;
+    int cadence = 18;
 
     /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
-    int neighbourhoodType = 0;
+    int neighbourhoodType = 2;
 
-    /** Number of non-improving solutions before restarting with random path. */
-    int incorrectThreshold = 50;
+    /** Number of non-improving iterations before restarting with random path. */
+    int resetThreshold = 30;
+
+    /** Number of non-improving iterations before terminating search. **/
+    int stopThreshold = 200;
 
     /** Tabu list. */
     int **tabu = nullptr;
@@ -61,7 +64,9 @@ public:
 
     void setNeighbourhoodType(int type);
 
-    void setIncorrectThreshold(int threshold);
+    void setResetThreshold(int resetThreshold);
+
+    void setStopThreshold(int stopThreshold);
 
 };
 

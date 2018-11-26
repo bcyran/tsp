@@ -204,8 +204,10 @@ Path TSPTabuSolver::solve() {
     // Current minimum path
     Path minPath = curPath;
 
-    // Counter of solutions that aren't better than current minimum
-    int incorrectCount = 0;
+    // Number of non-improving iterations since last reset
+    int resetCounter = 0;
+    // Number of iterations since last improvement
+    int stopCounter = 0;
     // Try specified number of times
     for (int i = 0; i < iterations; ++i) {
         // Find best neighbour of current path
@@ -214,16 +216,24 @@ Path TSPTabuSolver::solve() {
         // If neighbour is better set it as current minimum
         if (curPath.getDistance() < minPath.getDistance()) {
             minPath = curPath;
+            resetCounter = 0;
+            stopCounter = 0;
         } else {
             // Otherwise increment incorrect counter
-            ++incorrectCount;
+            ++resetCounter;
+            ++stopCounter;
+
+            // Terminate search if stopThreshold is exceeded
+            if (stopThreshold && (stopCounter >= stopThreshold)) {
+                break;
+            }
 
             // If count of incorrect solutions exceeds the threshold then restart with random path
-            if (incorrectThreshold && incorrectCount >= incorrectThreshold) {
+            if (resetThreshold && (resetCounter >= resetThreshold)) {
                 curPath = randomPath();
                 clean();
                 init();
-                incorrectCount = 0;
+                resetCounter = 0;
             }
         }
 
@@ -276,10 +286,19 @@ void TSPTabuSolver::setNeighbourhoodType(int type) {
 }
 
 /**
- * Sets incorrect iterations threshold.
+ * Sets number of non-improving iterations before resetting path to random.
  *
- * @param threshold
+ * @param resetThreshold
  */
-void TSPTabuSolver::setIncorrectThreshold(int threshold) {
-    TSPTabuSolver::incorrectThreshold = threshold;
+void TSPTabuSolver::setResetThreshold(int resetThreshold) {
+    TSPTabuSolver::resetThreshold = resetThreshold;
+}
+
+/**
+ * Sets number of non improving iterations before search termination.
+ *
+ * @param stopThreshold
+ */
+void TSPTabuSolver::setStopThreshold(int stopThreshold) {
+    TSPTabuSolver::stopThreshold = stopThreshold;
 }
