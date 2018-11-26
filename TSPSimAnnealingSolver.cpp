@@ -116,24 +116,20 @@ Path TSPSimAnnealingSolver::solve() {
         for (int i = 0; i < iterations; ++i) {
             Path newPath = randomNeighbour(curPath);
 
-            // If new solution is better than minimum set it as min and current
-            if (newPath.getDistance() < minPath.getDistance()) {
-                minPath = newPath;
-                curPath = newPath;
-                continue;
-            }
-
             // Difference between current and new distance
             int deltaDist = newPath.getDistance() - curPath.getDistance();
 
-            // If new path is shorter than the current one accept it and go to the next iteration
+            // If new path is shorter or equal to current
             if (deltaDist <= 0) {
-                curPath = newPath;
-                continue;
-            }
+                // If it's shorter set it as current minimum
+                if (deltaDist < 0) {
+                    minPath = newPath;
+                }
 
-            // Accept the path depending on calculated acceptance probability
-            if (exp(-deltaDist / temp) > randomProb()) {
+                // Set new path as current path and jump to the next iteration
+                curPath = newPath;
+            } else if (exp(-deltaDist / temp) > randomProb()) {
+                // If path is longer accept it depending on calculated acceptance probability
                 curPath = newPath;
             }
         }
