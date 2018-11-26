@@ -13,7 +13,6 @@
  * Initializes fields.
  */
 void TSPTabuSolver::init() {
-    clean();
     tabu = new int*[tsp.getSize()];
     for (int i = 0; i < tsp.getSize(); ++i) {
         tabu[i] = new int[tsp.getSize()];
@@ -31,6 +30,7 @@ void TSPTabuSolver::clean() {
         }
         delete[] tabu;
     }
+    tabu = nullptr;
 }
 
 /**
@@ -219,6 +219,7 @@ Path TSPTabuSolver::solve() {
             // If count of incorrect solutions exceeds the threshold then restart with random path
             if (incorrectCount >= incorrectThreshold) {
                 curPath = randomPath();
+                clean();
                 init();
                 incorrectCount = 0;
             }
@@ -237,6 +238,7 @@ Path TSPTabuSolver::solve() {
  * @param tsp TSP instance.
  */
 void TSPTabuSolver::setTsp(TSP tsp) {
+    clean();
     TSPSolver::setTsp(tsp);
     init();
 }
