@@ -138,16 +138,16 @@ void Path::swap(int x, int y) {
  * @param y Index of the second city.
  */
 void Path::insert(int x, int y) {
-    int newX = path[y];
-    while (y > x) {
-        path[y] = path[y - 1];
-        --y;
+    int newY = path[x];
+    while (x > y) {
+        path[x] = path[x - 1];
+        --x;
     }
-    while (y < x) {
-        path[y] = path[y + 1];
-        ++y;
+    while (x < y) {
+        path[x] = path[x + 1];
+        ++x;
     }
-    path[x] = newX;
+    path[y] = newY;
 }
 
 /**
@@ -157,6 +157,7 @@ void Path::insert(int x, int y) {
  * @param y Index of the second city.
  */
 void Path::invert(int x, int y) {
+    if (x > y) std::swap(x, y);
     while (x < y) {
         std::swap(path[x], path[y]);
         ++x;
