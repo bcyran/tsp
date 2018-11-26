@@ -151,6 +151,8 @@ Path TSPTabuSolver::minNeighbour(Path path) {
     // Iterate through all possible 2-city moves
     for (int i = 1; i < tsp.getSize() - 1; ++i) {
         for (int j = 1; j < tsp.getSize() - 1; ++j) {
+            // Do not perform swap that won't change anything
+            if (i == j) continue;
             // If this move is tabu skip it
             if (tabu[i][j]) continue;
 
