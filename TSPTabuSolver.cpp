@@ -145,14 +145,28 @@ Path TSPTabuSolver::minNeighbour(Path path) {
     // Current minimum neighbour path
     Path minNeigh = Path(tsp.getSize() + 1);
     minNeigh.setDistance(INT_MAX);
-    // Indexes of swap of the best neighbour
+    // Indexes of the best move
     pair<int, int> bestMove;
 
     // Iterate through all possible 2-city moves
     for (int i = 1; i < tsp.getSize() - 1; ++i) {
         for (int j = 1; j < tsp.getSize() - 1; ++j) {
-            // Do not perform swap that won't change anything
-            if (i == j) continue;
+            // Skip redundant moves
+            switch (neighbourhoodType) {
+                case 0:
+                    if (j <= i) continue;
+                    break;
+                case 1:
+                    if ((j == i + 1) || (j == i - 1)) continue;
+                    break;
+                case 2:
+                    if (j <= i) continue;
+                    break;
+                default:
+                    // nope
+                    break;
+            }
+
             // If this move is tabu skip it
             if (tabu[i][j]) continue;
 
@@ -169,7 +183,7 @@ Path TSPTabuSolver::minNeighbour(Path path) {
         }
     }
 
-    // Tabu performed swap
+    // Tabu performed move
     tabu[bestMove.first][bestMove.second] = cadence;
     tabu[bestMove.second][bestMove.first] = cadence;
 
