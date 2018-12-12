@@ -13,19 +13,19 @@
 class TSPSimAnnealingSolver : public TSPSolver {
 
     /** Initial temperature. */
-    double initTemp = 1000;
+    double initTemp = 100;
 
     /** Minimal temperature (stop condition). */
-    double endTemp = 0.0001;
+    double endTemp = 0.1;
 
     /** Cooling rate. */
     double coolingRate = 0.001;
 
     /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
-    int neighbourhoodType = 0;
+    int neighbourhoodType = 2;
 
     /** Number of iterations for each temperature cycle. */
-    int iterations = 20;
+    int iterations = 450;
 
     Path randomPath();
 

@@ -24,10 +24,10 @@ class TSPTabuSolver : public TSPSolver {
     int neighbourhoodType = 2;
 
     /** Number of non-improving iterations before restarting with random path. */
-    int resetThreshold = 30;
+    int resetThreshold = 45;
 
     /** Number of non-improving iterations before terminating search. **/
-    int stopThreshold = 200;
+    int stopThreshold = 450;
 
     /** Tabu list. */
     int **tabu = nullptr;
