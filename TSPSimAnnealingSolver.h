@@ -19,7 +19,7 @@ class TSPSimAnnealingSolver : public TSPSolver {
     double endTemp = 0.1;
 
     /** Cooling rate. */
-    double coolingRate = 0.001;
+    double coolingRate = 0.01;
 
     /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
     int neighbourhoodType = 2;
