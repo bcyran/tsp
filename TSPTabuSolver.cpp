@@ -85,32 +85,6 @@ Path TSPTabuSolver::solveGreedy() {
 }
 
 /**
- * Generates random path starting and ending in 0 using Fisher-Yates algorithm.
- *
- * @return Random path.
- */
-Path TSPTabuSolver::randomPath() {
-    // Path with city number same as its index and return to 0
-    Path path(tsp.getSize() + 1);
-    path.setPoint(tsp.getSize(), 0);
-    for (int i = 0; i < tsp.getSize(); ++i) {
-        path.setPoint(i, i);
-    }
-
-    default_random_engine r(random_device{}());
-
-    // Shuffle using Fisher-Yates omitting first and last index
-    for (int i = 1; i < tsp.getSize() - 2; ++i) {
-        uniform_int_distribution<int> range(i, tsp.getSize() - 1);
-        path.swap(i, range(r));
-    }
-
-    path.setDistance(tsp.pathDist(path));
-
-    return path;
-}
-
-/**
  * Performs chosen 2-city move on given path to obtain paths' neighbour.
  *
  * @param path Path to perform the move on.
@@ -244,7 +218,8 @@ Path TSPTabuSolver::solve() {
 
             // If count of incorrect solutions exceeds the threshold then restart with random path
             if (resetThreshold && (resetCounter >= resetThreshold)) {
-                curPath = randomPath();
+                curPath.random();
+                curPath.setDistance(tsp.pathDist(curPath));
                 clean();
                 init();
                 resetCounter = 0;

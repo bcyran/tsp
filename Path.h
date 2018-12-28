@@ -36,6 +36,8 @@ public:
 
     bool inPath(int city, int limit);
 
+    void random();
+
     bool permute(int start, int end);
 
     void swap(int x, int y);

@@ -38,8 +38,6 @@ class TSPTabuSolver : public TSPSolver {
 
     Path solveGreedy();
 
-    Path randomPath();
-
     void move(Path &path, int x, int y);
 
     Path minNeighbour(Path path);

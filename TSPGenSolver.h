@@ -31,8 +31,6 @@ class TSPGenSolver : public TSPSolver {
 
     void clean();
 
-    Path randomPath();
-
     void sortPopulation();
 
     void initPopulation();

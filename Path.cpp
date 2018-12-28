@@ -1,9 +1,12 @@
+#include <random>
+
 //
 // Created by bazyli on 11.10.18.
 //
 
 #include <cstring>
 #include <sstream>
+#include <algorithm>
 #include "Path.h"
 
 /**
@@ -79,6 +82,19 @@ bool Path::inPath(int city, int limit) {
     }
 
     return false;
+}
+
+/**
+ * Generates random path starting and ending in 0.
+ */
+void Path::random() {
+    // Path with city number same as its index and return to 0
+    path[length - 1] = 0;
+    for (int i = 0; i < length - 1; ++i) {
+        path[i] = i;
+    }
+
+    std::shuffle(path + 1, path + length - 1, std::mt19937(std::random_device()()));
 }
 
 /**

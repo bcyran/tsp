@@ -27,8 +27,6 @@ class TSPSimAnnealingSolver : public TSPSolver {
     /** Number of iterations for each temperature cycle. */
     int iterations = 450;
 
-    Path randomPath();
-
     void move(Path &path, int x, int y);
 
     Path randomNeighbour(Path path);
