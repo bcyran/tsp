@@ -27,9 +27,11 @@ public:
 
     TSP();
 
-    virtual ~TSP();
+    explicit TSP(string file);
 
     TSP(const TSP &src);
+
+    virtual ~TSP();
 
     TSP &operator=(const TSP &src);
 

@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by bazyli on 11.10.18.
 //
@@ -16,13 +18,12 @@
 TSP::TSP() = default;
 
 /**
- * Frees up memory by deleting distance matrix.
+ * Creates TSP instance and loads given file.
+ *
+ * @param file Name of the file to load.
  */
-TSP::~TSP() {
-    for (int i = 0; i < size; ++i) {
-        delete[] distance[i];
-    }
-    delete[] distance;
+TSP::TSP(string file) {
+    load(std::move(file));
 }
 
 /**
@@ -36,6 +37,16 @@ TSP::TSP(const TSP &src) : size(src.size) {
         this->distance[i] = new int[size];
         memcpy(this->distance[i], src.distance[i], sizeof(src.distance[i][0]) * size);
     }
+}
+
+/**
+ * Frees up memory by deleting distance matrix.
+ */
+TSP::~TSP() {
+    for (int i = 0; i < size; ++i) {
+        delete[] distance[i];
+    }
+    delete[] distance;
 }
 
 /**
