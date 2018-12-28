@@ -24,9 +24,26 @@ class TSPGenSolver : public TSPSolver {
     /** Number of generations to evolve. */
     int generations = 500;
 
+    /** Array containing current population. */
+    Path *population = nullptr;
+
+    void init();
+
+    void clean();
+
+    Path randomPath();
+
+    void sortPopulation();
+
+    void initPopulation();
+
 public:
 
-    using TSPSolver::TSPSolver;
+    TSPGenSolver();
+
+    explicit TSPGenSolver(TSP tsp);
+
+    virtual ~TSPGenSolver();
 
     Path solve() override;
 
