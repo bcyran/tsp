@@ -5,6 +5,7 @@
 #ifndef TSP_TSPGENSOLVER_H
 #define TSP_TSPGENSOLVER_H
 
+#include <vector>
 #include "TSPSolver.h"
 
 /**
@@ -24,24 +25,26 @@ class TSPGenSolver : public TSPSolver {
     /** Number of generations to evolve. */
     int generations = 500;
 
-    /** Array containing current population. */
-    Path *population = nullptr;
+    /** Current population. */
+    vector<Path> population;
 
-    void init();
+    /** Current mating pool. */
+    vector<Path> matingPool;
 
-    void clean();
+    /** Current children. */
+    vector<Path> children;
+
+    float randomProb();
 
     void sortPopulation();
 
     void initPopulation();
 
+    void selection();
+
 public:
 
-    TSPGenSolver();
-
-    explicit TSPGenSolver(TSP tsp);
-
-    virtual ~TSPGenSolver();
+    using TSPSolver::TSPSolver;
 
     Path solve() override;
 
