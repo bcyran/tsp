@@ -31,12 +31,9 @@ class TSPGenSolver : public TSPSolver {
     /** Current mating pool. */
     vector<Path> matingPool;
 
-    /** Current children. */
-    vector<Path> children;
-
     float randomProb();
 
-    void sortPopulation(vector<Path> &population);
+    void sortPopulation();
 
     void initPopulation();
 

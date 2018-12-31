@@ -23,7 +23,7 @@ float TSPGenSolver::randomProb() {
 /**
  * Sorts population in ascending order by path length.
  */
-void TSPGenSolver::sortPopulation(vector<Path> &population) {
+void TSPGenSolver::sortPopulation() {
     std::sort(population.begin(), population.end(), [](const auto &l, const auto &r) {
         return l.getDistance() < r.getDistance();
     });
@@ -42,14 +42,15 @@ void TSPGenSolver::initPopulation() {
         path.setDistance(tsp.pathDist(path));
         population.push_back(path);
     }
-    sortPopulation(population);
+    sortPopulation();
 }
 
 /**
  * Fill mating pool with individuals chosen using Roulette Wheel Selection.
  */
 void TSPGenSolver::selection() {
-    // Allocate memory for the mating pool
+    // Clear the mating pool and allocate memory
+    matingPool.clear();
     matingPool.reserve(static_cast<unsigned long>(populationSize));
     // Copy elite straight to the mating pool
     matingPool.insert(matingPool.end(), population.begin(), population.begin() + eliteSize);
@@ -142,18 +143,21 @@ Path TSPGenSolver::crossover(Path parent1, Path parent2) {
 }
 
 /**
- * Breed the mating pool by crossing over each individual with the next one.
+ * Creates new population by breeding the mating pool.
+ * Breeding consists of crossing over each individual with the next one in the mating pool.
  */
 void TSPGenSolver::breed() {
-    children.reserve(static_cast<unsigned long>(populationSize));
+    // Clear the current population and allocate memory
+    population.clear();
+    population.reserve(static_cast<unsigned long>(populationSize));
     // Crossover every parent from the mating pool with the next one
     for (int i = 0; i < populationSize - 1; ++i) {
-        children.push_back(crossover(matingPool[i], matingPool[i + 1]));
+        population.push_back(crossover(matingPool[i], matingPool[i + 1]));
     }
     // Wrap around to the start, crossover last parent with first parent
-    children.push_back(crossover(matingPool[populationSize - 1], matingPool[0]));
+    population.push_back(crossover(matingPool[populationSize - 1], matingPool[0]));
     // Sort children
-    sortPopulation(children);
+    sortPopulation();
 }
 
 /**
