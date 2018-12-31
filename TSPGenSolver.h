@@ -46,6 +46,8 @@ class TSPGenSolver : public TSPSolver {
 
     void breed();
 
+    void mutation(Path &path);
+
 public:
 
     using TSPSolver::TSPSolver;

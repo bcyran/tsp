@@ -157,6 +157,27 @@ void TSPGenSolver::breed() {
 }
 
 /**
+ * Mutate given individual by swapping cities with probability defined by mutationRate.
+ *
+ * @param path Individual to mutate.
+ */
+void TSPGenSolver::mutation(Path &path) {
+    // Loop through every city in path
+    for (int i = 1; i < tsp.getSize(); ++i) {
+        // Determine if mutation will be performed based on random number
+        if (randomProb() >= mutationRate) continue;
+
+        // Randomly choose second city to swap (can't be the first or last)
+        default_random_engine r(random_device{}());
+        uniform_int_distribution<int> range(1, tsp.getSize() - 1);
+        int swap = range(r);
+
+        path.swap(i, swap);
+    }
+    path.setDistance(tsp.pathDist(path));
+}
+
+/**
  * Solves TSP using Genetic Algorithm.
  *
  * @return Best found path.
