@@ -23,7 +23,7 @@ float TSPGenSolver::randomProb() {
 /**
  * Sorts population in ascending order by path length.
  */
-void TSPGenSolver::sortPopulation() {
+void TSPGenSolver::sortPopulation(vector<Path> &population) {
     std::sort(population.begin(), population.end(), [](const auto &l, const auto &r) {
         return l.getDistance() < r.getDistance();
     });
@@ -42,7 +42,7 @@ void TSPGenSolver::initPopulation() {
         path.setDistance(tsp.pathDist(path));
         population.push_back(path);
     }
-    sortPopulation();
+    sortPopulation(population);
 }
 
 /**
@@ -142,6 +142,21 @@ Path TSPGenSolver::crossover(Path parent1, Path parent2) {
 }
 
 /**
+ * Breed the mating pool by crossing over each individual with the next one.
+ */
+void TSPGenSolver::breed() {
+    children.reserve(static_cast<unsigned long>(populationSize));
+    // Crossover every parent from the mating pool with the next one
+    for (int i = 0; i < populationSize - 1; ++i) {
+        children.push_back(crossover(matingPool[i], matingPool[i + 1]));
+    }
+    // Wrap around to the start, crossover last parent with first parent
+    children.push_back(crossover(matingPool[populationSize - 1], matingPool[0]));
+    // Sort children
+    sortPopulation(children);
+}
+
+/**
  * Solves TSP using Genetic Algorithm.
  *
  * @return Best found path.
@@ -153,9 +168,7 @@ Path TSPGenSolver::solve() {
 
     initPopulation();
     selection();
-
-    cout << matingPool[0].toString() << endl << matingPool[1].toString() << endl;
-    cout << crossover(matingPool[0], matingPool[1]).toString() << endl;
+    breed();
 
     return Path();
 }

@@ -36,13 +36,15 @@ class TSPGenSolver : public TSPSolver {
 
     float randomProb();
 
-    void sortPopulation();
+    void sortPopulation(vector<Path> &population);
 
     void initPopulation();
 
     void selection();
 
     Path crossover(Path parent1, Path parent2);
+
+    void breed();
 
 public:
 
