@@ -156,8 +156,6 @@ void TSPGenSolver::breed() {
     }
     // Wrap around to the start, crossover last parent with first parent
     population.push_back(crossover(matingPool[populationSize - 1], matingPool[0]));
-    // Sort children
-    sortPopulation();
 }
 
 /**
@@ -200,11 +198,27 @@ Path TSPGenSolver::solve() {
         throw runtime_error("Cannot solve empty problem.");
     }
 
+    // Initialize population and minimum path
     initPopulation();
-    selection();
-    breed();
+    Path minPath = population.front();
 
-    return Path();
+    // Loop through specified number of generations
+    for (int i = 0; i < generations; ++i) {
+        // Perform selection, breeding and mutation
+        selection();
+        breed();
+        mutate();
+
+        // Sort the population
+        sortPopulation();
+
+        // If best path from this generation is better than min path set it as min
+        if (population.front().getDistance() < minPath.getDistance()) {
+            minPath = population.front();
+        }
+    }
+
+    return minPath;
 }
 
 /**
