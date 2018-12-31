@@ -116,7 +116,7 @@ Path TSPGenSolver::crossover(Path parent1, Path parent2) {
     // Fill in empty cities with cities from parent 2 in order
     int parentPos = 1;
     int childPos = 1;
-    while (parentPos <= tsp.getSize()) {
+    while (parentPos < tsp.getSize()) {
         // If we are inside range copied from parent 1 jump to the and of it
         if (childPos >= startPos && childPos <= endPos) {
             childPos = endPos + 1;
