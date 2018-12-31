@@ -177,8 +177,17 @@ void TSPGenSolver::mutation(Path &path) {
         int swap = range(r);
 
         path.swap(i, swap);
+        path.setDistance(tsp.pathDist(path));
     }
-    path.setDistance(tsp.pathDist(path));
+}
+
+/**
+ * Mutates the population by applying mutate method to each individual.
+ */
+void TSPGenSolver::mutate() {
+    for (auto individual : population) {
+        mutation(individual);
+    }
 }
 
 /**

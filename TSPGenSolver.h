@@ -45,6 +45,8 @@ class TSPGenSolver : public TSPSolver {
 
     void mutation(Path &path);
 
+    void mutate();
+
 public:
 
     using TSPSolver::TSPSolver;
