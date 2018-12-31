@@ -83,6 +83,65 @@ void TSPGenSolver::selection() {
 }
 
 /**
+ * Performs order 1 crossover on two parents paths to create a child path.
+ *
+ * @param parent1 First parent path.
+ * @param parent2 Second parent path.
+ * @return Child path.
+ */
+Path TSPGenSolver::crossover(Path parent1, Path parent2) {
+    // Child path
+    Path child = Path(tsp.getSize() + 1);
+    child.setPoint(0, 0);
+    child.setPoint(tsp.getSize(), 0);
+
+    // Generate two random positions in paths
+    default_random_engine r(random_device{}());
+    // Positions can't be the first or last city of path
+    uniform_int_distribution<int> range(1, tsp.getSize() - 1);
+    int x = range(r);
+    int y;
+    // Positions can't be equal
+    do {
+        y = range(r);
+    } while (x == y);
+    // Lower number is start, higher is stop
+    int startPos = min(x, y);
+    int endPos = max(x, y);
+
+    // Copy part between start and end positions from first parent 1 to child
+    for (int i = startPos; i <= endPos; ++i) {
+        child.setPoint(i, parent1.getPoint(i));
+    }
+    // Fill in empty cities with cities from parent 2 in order
+    int parentPos = 1;
+    int childPos = 1;
+    while (parentPos <= tsp.getSize()) {
+        // If we are inside range copied from parent 1 jump to the and of it
+        if (childPos >= startPos && childPos <= endPos) {
+            childPos = endPos + 1;
+            continue;
+        }
+
+        // Get city from current parent position
+        int parentCity = parent2.getPoint(parentPos);
+        if (child.inPath(parentCity, tsp.getSize())) {
+            // If this city is already in child path increment parent position and continue
+            ++parentPos;
+            continue;
+        } else {
+            // If city is not in child insert it in and increment both counters
+            child.setPoint(childPos, parentCity);
+            ++childPos;
+            ++parentPos;
+        }
+    }
+
+    child.setDistance(tsp.pathDist(child));
+    return child;
+}
+
+/**
  * Solves TSP using Genetic Algorithm.
  *
  * @return Best found path.
@@ -94,6 +153,9 @@ Path TSPGenSolver::solve() {
 
     initPopulation();
     selection();
+
+    cout << matingPool[0].toString() << endl << matingPool[1].toString() << endl;
+    cout << crossover(matingPool[0], matingPool[1]).toString() << endl;
 
     return Path();
 }

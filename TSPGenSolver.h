@@ -42,6 +42,8 @@ class TSPGenSolver : public TSPSolver {
 
     void selection();
 
+    Path crossover(Path parent1, Path parent2);
+
 public:
 
     using TSPSolver::TSPSolver;
