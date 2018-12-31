@@ -46,7 +46,7 @@ void TSPGenSolver::initPopulation() {
 }
 
 /**
- * Fill mating pool with individuals chosen using Roulette Wheel Selection.
+ * Fills mating pool with individuals chosen using Roulette Wheel Selection.
  */
 void TSPGenSolver::selection() {
     // Clear the mating pool and allocate memory
@@ -161,7 +161,7 @@ void TSPGenSolver::breed() {
 }
 
 /**
- * Mutate given individual by swapping cities with probability defined by mutationRate.
+ * Mutates given individual by swapping cities with probability defined by mutationRate.
  *
  * @param path Individual to mutate.
  */
