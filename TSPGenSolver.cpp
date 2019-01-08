@@ -150,8 +150,10 @@ void TSPGenSolver::breed() {
     // Clear the current population and allocate memory
     population.clear();
     population.reserve(static_cast<unsigned long>(populationSize));
+    // Retain the elite without crossing over
+    population.insert(population.end(), matingPool.begin(), matingPool.begin() + eliteSize);
     // Crossover every parent from the mating pool with the next one
-    for (int i = 0; i < populationSize - 1; ++i) {
+    for (int i = eliteSize; i < populationSize - 1; ++i) {
         population.push_back(crossover(matingPool[i], matingPool[i + 1]));
     }
     // Wrap around to the start, crossover last parent with first parent
