@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include <climits>
 #include "TSPGenSolver.h"
 
 /**
@@ -34,6 +35,7 @@ void TSPGenSolver::sortPopulation() {
  */
 void TSPGenSolver::initPopulation() {
     // Allocate memory for the population
+    population.clear();
     population.reserve(static_cast<unsigned long>(populationSize));
     // Fill the population
     for (int i = 0; i < populationSize; i++) {
@@ -166,19 +168,19 @@ void TSPGenSolver::breed() {
  * @param path Individual to mutate.
  */
 void TSPGenSolver::mutation(Path &path) {
-    // Loop through every city in path
-    for (int i = 1; i < tsp.getSize(); ++i) {
-        // Determine if mutation will be performed based on random number
-        if (randomProb() >= mutationRate) continue;
+    default_random_engine r(random_device{}());
+    uniform_int_distribution<int> range(1, tsp.getSize() - 1);
 
-        // Randomly choose second city to swap (can't be the first or last)
-        default_random_engine r(random_device{}());
-        uniform_int_distribution<int> range(1, tsp.getSize() - 1);
-        int swap = range(r);
+    // Randomly choose to points in path
+    int x = range(r);
+    int y;
+    do {
+        y = range(r);
+    } while (x == y);
 
-        path.swap(i, swap);
-        path.setDistance(tsp.pathDist(path));
-    }
+    // Invert cities between these points
+    path.invert(x, y);
+    path.setDistance(tsp.pathDist(path));
 }
 
 /**
@@ -186,6 +188,7 @@ void TSPGenSolver::mutation(Path &path) {
  */
 void TSPGenSolver::mutate() {
     for (auto individual : population) {
+        if (randomProb() >= mutationRate) continue;
         mutation(individual);
     }
 }
