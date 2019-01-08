@@ -14,16 +14,16 @@
 class TSPGenSolver : public TSPSolver {
 
     /** Size of the one population. */
-    int populationSize = 100;
+    int populationSize = 600;
 
     /** Number of best individuals carried over to the next generation. */
-    int eliteSize = 20;
+    int eliteSize = 300;
 
     /** Rate at which mutations occur. */
-    float mutationRate = 0.01;
+    float mutationRate = 0.3;
 
     /** Number of generations to evolve. */
-    int generations = 500;
+    int generations = 300;
 
     /** Current population. */
     vector<Path> population;
