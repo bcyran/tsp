@@ -25,6 +25,9 @@ class TSPGenSolver : public TSPSolver {
     /** Number of generations to evolve. */
     int generations = 2000;
 
+    /** Maximum time of execution in ms. Overwrites generations parameter. */
+    int runTime = 0;
+
     /** Current population. */
     vector<Path> population;
 
@@ -60,6 +63,8 @@ public:
     void setMutationRate(float mutationRate);
 
     void setGenerations(int generations);
+
+    void setRunTime(int runTime);
 
 };
 

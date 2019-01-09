@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <climits>
+#include <chrono>
 #include "TSPGenSolver.h"
 
 /**
@@ -207,8 +208,10 @@ Path TSPGenSolver::solve() {
     initPopulation();
     Path minPath = population.front();
 
-    // Loop through specified number of generations
-    for (int i = 0; i < generations; ++i) {
+    // Loop through specified number of generations or run time
+    int evolved = 0;
+    auto startTime = chrono::high_resolution_clock::now();
+    while (true) {
         // Perform selection, breeding and mutation
         selection();
         breed();
@@ -220,6 +223,19 @@ Path TSPGenSolver::solve() {
         // If best path from this generation is better than min path set it as min
         if (population.front().getDistance() < minPath.getDistance()) {
             minPath = population.front();
+        }
+
+        // Stop conditions
+        if (runTime) {
+            // Calculate execution time and break if it exceeds maximum time
+            auto currentTime = chrono::high_resolution_clock::now();
+            int elapsedTime = static_cast<int>(chrono::duration_cast<chrono::milliseconds>(currentTime - startTime).count());
+
+            if (elapsedTime > runTime) break;
+        } else {
+            // Increment generations counter and break if it exceeds maximum number of generations
+            ++evolved;
+            if (evolved > generations) break;
         }
     }
 
@@ -260,4 +276,13 @@ void TSPGenSolver::setMutationRate(float mutationRate) {
  */
 void TSPGenSolver::setGenerations(int generations) {
     TSPGenSolver::generations = generations;
+}
+
+/**
+ * Sets maximum time of execution in ms.
+ *
+ * @param runTime Time in ms.
+ */
+void TSPGenSolver::setRunTime(int runTime) {
+    TSPGenSolver::runTime = runTime;
 }
