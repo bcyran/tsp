@@ -187,9 +187,9 @@ void TSPGenSolver::mutation(Path &path) {
  * Mutates the population by applying mutate method to each individual.
  */
 void TSPGenSolver::mutate() {
-    for (auto individual : population) {
+    for (int i = eliteSize; i < populationSize - 1; ++i) {
         if (randomProb() >= mutationRate) continue;
-        mutation(individual);
+        mutation(population[i]);
     }
 }
 
