@@ -5,6 +5,7 @@
 #include <random>
 #include <stdexcept>
 #include <iostream>
+#include <chrono>
 #include "TSPSimAnnealingSolver.h"
 
 /**
@@ -85,9 +86,10 @@ Path TSPSimAnnealingSolver::solve() {
 
     // Current temperature
     double temp = initTemp;
+    auto startTime = chrono::high_resolution_clock::now();
 
     // Loop as long as system temperature is higher than minimum
-    while (temp > endTemp) {
+    while (true) {
         // Execute number of times specified by iterations field
         for (int i = 0; i < iterations; ++i) {
             Path newPath = randomNeighbour(curPath);
@@ -112,6 +114,17 @@ Path TSPSimAnnealingSolver::solve() {
 
         // Decrease the temperature
         temp *= 1 - coolingRate;
+
+        // Stop conditions
+        if (runTime) {
+            // Calculate execution time and break if it exceeds maximum time
+            auto currentTime = chrono::high_resolution_clock::now();
+            int elapsedTime = static_cast<int>(chrono::duration_cast<chrono::milliseconds>(currentTime - startTime).count());
+
+            if (elapsedTime > runTime) break;
+        } else {
+            if (temp < endTemp) break;
+        }
     }
 
     return minPath;
@@ -163,4 +176,13 @@ void TSPSimAnnealingSolver::setNeighbourhoodType(int neighbourhoodType) {
  */
 void TSPSimAnnealingSolver::setIterations(int iterations) {
     TSPSimAnnealingSolver::iterations = iterations;
+}
+
+/**
+ * Sets maximum time of execution in ms.
+ *
+ * @param runTime Time in ms.
+ */
+void TSPSimAnnealingSolver::setRunTime(int runTime) {
+    TSPSimAnnealingSolver::runTime = runTime;
 }

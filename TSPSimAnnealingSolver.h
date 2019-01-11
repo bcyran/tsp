@@ -27,6 +27,9 @@ class TSPSimAnnealingSolver : public TSPSolver {
     /** Number of iterations for each temperature cycle. */
     int iterations = 450;
 
+    /** Maximum time of execution in ms. Overwrites iterations parameter. */
+    int runTime = 0;
+
     void move(Path &path, int x, int y);
 
     Path randomNeighbour(Path path);
@@ -48,6 +51,8 @@ public:
     void setNeighbourhoodType(int neighbourhoodType);
 
     void setIterations(int iterations);
+
+    void setRunTime(int runTime);
 
 };
 
