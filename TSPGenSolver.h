@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "TSPSolver.h"
+#include "Crossover.h"
 
 /**
  * Genetic Algorithm solver for TSP.
@@ -28,6 +29,9 @@ class TSPGenSolver : public TSPSolver {
     /** Maximum time of execution in ms. Overwrites generations parameter. */
     int runTime = 0;
 
+    /** Crossover type: OX, PMX or NWOX */
+    Crossover crossoverType = Crossover::NWOX;
+
     /** Current population. */
     vector<Path> population;
 
@@ -41,6 +45,14 @@ class TSPGenSolver : public TSPSolver {
     void initPopulation();
 
     void selection();
+
+    pair<int, int> randSubpath();
+
+    Path ox(Path parent1, Path parent2);
+
+    Path pmx(Path parent1, Path parent2);
+
+    Path nwox(Path parent1, Path parent2);
 
     Path crossover(Path parent1, Path parent2);
 
@@ -65,6 +77,8 @@ public:
     void setGenerations(int generations);
 
     void setRunTime(int runTime);
+
+    void setCrossoverType(Crossover crossoverType);
 
 };
 

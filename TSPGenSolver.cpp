@@ -87,13 +87,11 @@ void TSPGenSolver::selection() {
 }
 
 /**
- * Performs order 1 crossover on two parents paths to create a child path.
+ * Randomly draws to locations in path excluding first and last.
  *
- * @param parent1 First parent path.
- * @param parent2 Second parent path.
- * @return Child path.
+ * @return Pair consisting of indexes in path.
  */
-Path TSPGenSolver::crossover(Path parent1, Path parent2) {
+pair<int, int> TSPGenSolver::randSubpath() {
     // Child path
     Path child = Path(tsp.getSize() + 1);
     child.setPoint(0, 0);
@@ -109,9 +107,27 @@ Path TSPGenSolver::crossover(Path parent1, Path parent2) {
     do {
         y = range(r);
     } while (x == y);
-    // Lower number is start, higher is stop
-    int startPos = min(x, y);
-    int endPos = max(x, y);
+
+    return {min(x, y), max(x, y)};
+}
+
+/**
+ * Performs order 1 crossover on two parents paths to create a child path.
+ *
+ * @param parent1 First parent path.
+ * @param parent2 Second parent path.
+ * @return Child path.
+ */
+Path TSPGenSolver::ox(Path parent1, Path parent2) {
+    // Child path
+    Path child = Path(tsp.getSize() + 1);
+    child.setPoint(0, 0);
+    child.setPoint(tsp.getSize(), 0);
+
+    // Random subpath
+    pair<int, int> sub = randSubpath();
+    int startPos = sub.first;
+    int endPos = sub.second;
 
     // Copy part between start and end positions from first parent 1 to child
     for (int i = startPos; i <= endPos; ++i) {
@@ -143,6 +159,174 @@ Path TSPGenSolver::crossover(Path parent1, Path parent2) {
 
     child.setDistance(tsp.pathDist(child));
     return child;
+}
+
+/**
+ * Performs PMX crossover on two parents paths to create a child path.
+ *
+ * @param parent1 First parent path.
+ * @param parent2 Second parent path.
+ * @return Child path.
+ */
+Path TSPGenSolver::pmx(Path parent1, Path parent2) {
+    // Child path
+    Path child = Path(tsp.getSize() + 1);
+    child.setPoint(0, 0);
+    child.setPoint(tsp.getSize(), 0);
+
+    // Random subpath
+    pair<int, int> sub = randSubpath();
+    int startPos = sub.first;
+    int endPos = sub.second;
+
+    // Create mapping array and it with -1
+    auto mapping = new int[tsp.getSize() + 1];
+    fill(mapping, mapping + tsp.getSize() + 1, -1);
+
+    // Copy part between start and end positions from parent 1 to child
+    // and create mapping
+    for (int i = startPos; i <= endPos; ++i) {
+        child.setPoint(i, parent1.getPoint(i));
+        mapping[parent1.getPoint(i)] = parent2.getPoint(i);
+    }
+
+    // Copy other cities from parent2 to child using mapping if necessary
+    for (int i = 1; i < tsp.getSize(); ++i) {
+        // If we are inside range copied from parent 1 jump to the and of it
+        if (i >= startPos && i <= endPos) {
+            i = endPos;
+            continue;
+        }
+
+        // Get city at current index from parent2
+        int value = parent2.getPoint(i);
+
+        // Trace mapping if exists
+        while (mapping[value] != -1) {
+            value = mapping[value];
+        }
+
+        // Set point in child path
+        child.setPoint(i, value);
+    }
+
+    delete[] mapping;
+
+    child.setDistance(tsp.pathDist(child));
+    return child;
+}
+
+/**
+ * Performs non-wrapping order crossover on two parents paths to create a child path.
+ *
+ * @param parent1 First parent path.
+ * @param parent2 Second parent path.
+ * @return Child path.
+ */
+Path TSPGenSolver::nwox(Path parent1, Path parent2) {
+    // Child path
+    Path child = Path(tsp.getSize() + 1);
+    child.setPoint(0, 0);
+    child.setPoint(tsp.getSize(), 0);
+
+    // Random subpath
+    pair<int, int> sub = randSubpath();
+    int startPos = sub.first;
+    int endPos = sub.second;
+
+    // Already copied cities
+    auto used = new bool[tsp.getSize() + 1];
+    fill(used, used + tsp.getSize(), false);
+    // Copy part between start and end positions from parent 1 to child
+    for (int i = startPos; i <= endPos; ++i) {
+        child.setPoint(i, parent1.getPoint(i));
+        used[parent1.getPoint(i)] = true;
+    }
+
+    // Copy cities from parent2 if those aren't already in child (preserve original positions)
+    for (int i = 1; i < tsp.getSize(); ++i) {
+        // If we are inside range copied from parent 1 jump to the and of it
+        if (i >= startPos && i <= endPos) {
+            i = endPos;
+            continue;
+        }
+
+        // Skip city if it's already used
+        if (used[parent2.getPoint(i)]) continue;
+
+        // Set point in child path
+        child.setPoint(i, parent2.getPoint(i));
+        used[parent2.getPoint(i)] = true;
+    }
+
+    // "Slide" the cities outside of the copied range to the edges
+    // From the left
+    for (int i = 1; i < startPos; ++i) {
+        // If current position is empty
+        if (child.getPoint(i) != -1) continue;
+
+        // Search for the next not empty position
+        int j = i;
+        while (j < startPos - 1 && child.getPoint(j) == -1) { ++j; }
+
+        // And set it's value as current position
+        child.setPoint(i, child.getPoint(j));
+        child.setPoint(j, -1);
+    }
+    // And from the right
+    for (int i = tsp.getSize() - 1; i > endPos; --i) {
+        if (child.getPoint(i) != -1) continue;
+
+        int j = i;
+        while (j > endPos + 1 && child.getPoint(j) == -1) { --j; }
+
+        child.setPoint(i, child.getPoint(j));
+        child.setPoint(j, -1);
+    }
+
+    // Current index of path2 subpath
+    int subi = startPos;
+    // Fill empty spaces with cities from parent2 subpath
+    for (int i = 1; i < tsp.getSize(); ++i) {
+        // If we are inside range copied from parent 1 jump to the and of it
+        if (i >= startPos && i <= endPos) {
+            i = endPos;
+            continue;
+        }
+
+        // If current position in child isn't empty skip iterations
+        if (child.getPoint(i) != -1) continue;
+
+        // If current city in parent2 subpath is used advance to the next ione
+        while (used[parent2.getPoint(subi)]) ++subi;
+
+        // Set point in child path
+        child.setPoint(i, parent2.getPoint(subi));
+        ++subi;
+    }
+
+    delete[] used;
+
+    child.setDistance(tsp.pathDist(child));
+    return child;
+}
+
+/**
+ * Performs chosen crossover on given paths.
+ *
+ * @param parent1 First parent path.
+ * @param parent2 Second parent path.
+ * @return Child path.
+ */
+Path TSPGenSolver::crossover(Path parent1, Path parent2) {
+    switch (crossoverType) {
+        case Crossover::OX:
+            return ox(parent1, parent2);
+        case Crossover::PMX:
+            return pmx(parent1, parent2);
+        case Crossover::NWOX:
+            return nwox(parent1, parent2);
+    }
 }
 
 /**
@@ -229,7 +413,8 @@ Path TSPGenSolver::solve() {
         if (runTime) {
             // Calculate execution time and break if it exceeds maximum time
             auto currentTime = chrono::high_resolution_clock::now();
-            int elapsedTime = static_cast<int>(chrono::duration_cast<chrono::milliseconds>(currentTime - startTime).count());
+            int elapsedTime = static_cast<int>(chrono::duration_cast<chrono::milliseconds>(
+                    currentTime - startTime).count());
 
             if (elapsedTime > runTime) break;
         } else {
@@ -285,4 +470,13 @@ void TSPGenSolver::setGenerations(int generations) {
  */
 void TSPGenSolver::setRunTime(int runTime) {
     TSPGenSolver::runTime = runTime;
+}
+
+/**
+ * Sets the path crossover type.
+ *
+ * @param crossoverType
+ */
+void TSPGenSolver::setCrossoverType(Crossover crossoverType) {
+    TSPGenSolver::crossoverType = crossoverType;
 }
