@@ -14,7 +14,7 @@
  * Initializes fields.
  */
 void TSPTabuSolver::init() {
-    tabu = new int*[tsp.getSize()];
+    tabu = new int *[tsp.getSize()];
     for (int i = 0; i < tsp.getSize(); ++i) {
         tabu[i] = new int[tsp.getSize()];
         fill(tabu[i], tabu[i] + tsp.getSize(), 0);
@@ -103,8 +103,6 @@ void TSPTabuSolver::move(Path &path, int x, int y) {
         case Neighbourhood::INVERT:
             path.invert(x, y);
             break;
-        default:
-            break;
     }
 }
 
@@ -136,9 +134,6 @@ Path TSPTabuSolver::minNeighbour(Path path) {
                     break;
                 case Neighbourhood::INVERT:
                     if (j <= i) continue;
-                    break;
-                default:
-                    // nope
                     break;
             }
 
@@ -200,7 +195,7 @@ Path TSPTabuSolver::solve() {
     // Try for specified time or number of iterations
     int i = 0;
     auto startTime = chrono::high_resolution_clock::now();
-    while(true) {
+    while (true) {
         // Find best neighbour of current path
         curPath = minNeighbour(curPath);
 
@@ -278,10 +273,7 @@ void TSPTabuSolver::setCadence(int cadence) {
 }
 
 /**
- * Sets the neighbourhood type:
- * 0 - swap
- * 1 - insert
- * 2 - invert
+ * Sets the neighbourhood type: SWAP, INSERT or INVERT.
  *
  * @param type Neighbourhood type.
  */

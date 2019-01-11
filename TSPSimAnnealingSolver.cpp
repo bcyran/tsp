@@ -26,8 +26,6 @@ void TSPSimAnnealingSolver::move(Path &path, int x, int y) {
         case Neighbourhood::INVERT:
             path.invert(x, y);
             break;
-        default:
-            break;
     }
 }
 
@@ -158,10 +156,7 @@ void TSPSimAnnealingSolver::setCoolingRate(double coolingRate) {
 }
 
 /**
- * Sets the neighbourhood type:
- * 0 - swap
- * 1 - insert
- * 2 - invert
+ * Sets the neighbourhood type: SWAP, INSERT or INVERT.
  *
  * @param type Neighbourhood type.
  */
