@@ -94,13 +94,13 @@ Path TSPTabuSolver::solveGreedy() {
  */
 void TSPTabuSolver::move(Path &path, int x, int y) {
     switch (neighbourhoodType) {
-        case 0:
+        case Neighbourhood::SWAP:
             path.swap(x, y);
             break;
-        case 1:
+        case Neighbourhood::INSERT:
             path.insert(x, y);
             break;
-        case 2:
+        case Neighbourhood::INVERT:
             path.invert(x, y);
             break;
         default:
@@ -128,13 +128,13 @@ Path TSPTabuSolver::minNeighbour(Path path) {
         for (int j = 1; j < tsp.getSize() - 1; ++j) {
             // Skip redundant moves
             switch (neighbourhoodType) {
-                case 0:
+                case Neighbourhood::SWAP:
                     if (j <= i) continue;
                     break;
-                case 1:
+                case Neighbourhood::INSERT:
                     if ((j == i + 1) || (j == i - 1)) continue;
                     break;
-                case 2:
+                case Neighbourhood::INVERT:
                     if (j <= i) continue;
                     break;
                 default:
@@ -285,7 +285,7 @@ void TSPTabuSolver::setCadence(int cadence) {
  *
  * @param type Neighbourhood type.
  */
-void TSPTabuSolver::setNeighbourhoodType(int type) {
+void TSPTabuSolver::setNeighbourhoodType(Neighbourhood type) {
     TSPTabuSolver::neighbourhoodType = type;
 }
 

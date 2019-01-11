@@ -6,6 +6,7 @@
 #define TSP_TSPSIMANNEALINGSOLVER_H
 
 #include "TSPSolver.h"
+#include "Neighbourhood.h"
 
 /**
  * Simulated Annealing solver for TSP.
@@ -21,8 +22,8 @@ class TSPSimAnnealingSolver : public TSPSolver {
     /** Cooling rate. */
     double coolingRate = 0.01;
 
-    /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
-    int neighbourhoodType = 2;
+    /** Neighbourhood type: SWAP, INSERT or INVERT. */
+    Neighbourhood neighbourhoodType = Neighbourhood::INVERT;
 
     /** Number of iterations for each temperature cycle. */
     int iterations = 450;
@@ -48,7 +49,7 @@ public:
 
     void setCoolingRate(double coolingRate);
 
-    void setNeighbourhoodType(int neighbourhoodType);
+    void setNeighbourhoodType(Neighbourhood neighbourhoodType);
 
     void setIterations(int iterations);
 

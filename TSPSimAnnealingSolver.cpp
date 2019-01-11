@@ -17,13 +17,13 @@
  */
 void TSPSimAnnealingSolver::move(Path &path, int x, int y) {
     switch (neighbourhoodType) {
-        case 0:
+        case Neighbourhood::SWAP:
             path.swap(x, y);
             break;
-        case 1:
+        case Neighbourhood::INSERT:
             path.insert(x, y);
             break;
-        case 2:
+        case Neighbourhood::INVERT:
             path.invert(x, y);
             break;
         default:
@@ -165,7 +165,7 @@ void TSPSimAnnealingSolver::setCoolingRate(double coolingRate) {
  *
  * @param type Neighbourhood type.
  */
-void TSPSimAnnealingSolver::setNeighbourhoodType(int neighbourhoodType) {
+void TSPSimAnnealingSolver::setNeighbourhoodType(Neighbourhood neighbourhoodType) {
     TSPSimAnnealingSolver::neighbourhoodType = neighbourhoodType;
 }
 

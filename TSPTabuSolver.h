@@ -8,6 +8,7 @@
 
 #include "TSP.h"
 #include "TSPSolver.h"
+#include "Neighbourhood.h"
 
 /**
  * Tabu search solver for TSP.
@@ -20,8 +21,8 @@ class TSPTabuSolver : public TSPSolver {
     /** Tabu cadence. */
     int cadence = 18;
 
-    /** Neighbourhood type: 0 - swap, 1 - insert, 2 - invert. */
-    int neighbourhoodType = 2;
+    /** Neighbourhood type: SWAP, INSERT or INVERT. */
+    Neighbourhood neighbourhoodType = Neighbourhood::INVERT;
 
     /** Number of non-improving iterations before restarting with random path. */
     int resetThreshold = 45;
@@ -63,7 +64,7 @@ public:
 
     void setCadence(int cadence);
 
-    void setNeighbourhoodType(int type);
+    void setNeighbourhoodType(Neighbourhood type);
 
     void setResetThreshold(int resetThreshold);
 
