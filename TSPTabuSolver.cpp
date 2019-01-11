@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 #include <random>
+#include <chrono>
 #include "TSPTabuSolver.h"
 
 /**
@@ -196,8 +197,10 @@ Path TSPTabuSolver::solve() {
     int resetCounter = 0;
     // Number of iterations since last improvement
     int stopCounter = 0;
-    // Try specified number of times
-    for (int i = 0; i < iterations; ++i) {
+    // Try for specified time or number of iterations
+    int i = 0;
+    auto startTime = chrono::high_resolution_clock::now();
+    while(true) {
         // Find best neighbour of current path
         curPath = minNeighbour(curPath);
 
@@ -212,7 +215,7 @@ Path TSPTabuSolver::solve() {
             ++stopCounter;
 
             // Terminate search if stopThreshold is exceeded
-            if (stopThreshold && (stopCounter >= stopThreshold)) {
+            if (!runTime && stopThreshold && (stopCounter >= stopThreshold)) {
                 break;
             }
 
@@ -228,6 +231,18 @@ Path TSPTabuSolver::solve() {
 
         // Update tabu list
         updateTabu();
+
+        if (runTime) {
+            // Calculate execution time and break if it exceeds maximum time
+            auto currentTime = chrono::high_resolution_clock::now();
+            int elapsedTime = static_cast<int>(chrono::duration_cast<chrono::milliseconds>(currentTime - startTime).count());
+
+            if (elapsedTime > runTime) break;
+        } else {
+            // Increment generations counter and break if it exceeds maximum number of generations
+            ++i;
+            if (i > iterations) break;
+        }
     }
 
     return minPath;
@@ -290,4 +305,13 @@ void TSPTabuSolver::setResetThreshold(int resetThreshold) {
  */
 void TSPTabuSolver::setStopThreshold(int stopThreshold) {
     TSPTabuSolver::stopThreshold = stopThreshold;
+}
+
+/**
+ * Sets maximum time of execution in ms.
+ *
+ * @param runTime Time in ms.
+ */
+void TSPTabuSolver::setRunTime(int runTime) {
+    TSPTabuSolver::runTime = runTime;
 }

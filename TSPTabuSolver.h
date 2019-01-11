@@ -29,6 +29,9 @@ class TSPTabuSolver : public TSPSolver {
     /** Number of non-improving iterations before terminating search. **/
     int stopThreshold = 450;
 
+    /** Maximum time of execution in ms. Overwrites iterations parameter and stop threshold. */
+    int runTime = 0;
+
     /** Tabu list. */
     int **tabu = nullptr;
 
@@ -65,6 +68,8 @@ public:
     void setResetThreshold(int resetThreshold);
 
     void setStopThreshold(int stopThreshold);
+
+    void setRunTime(int runTime);
 
 };
 
