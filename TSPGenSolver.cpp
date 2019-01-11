@@ -125,9 +125,9 @@ Path TSPGenSolver::ox(Path parent1, Path parent2) {
     child.setPoint(tsp.getSize(), 0);
 
     // Random subpath
-    pair<int, int> sub = randSubpath();
-    int startPos = sub.first;
-    int endPos = sub.second;
+    pair<int, int> subpath = randSubpath();
+    int startPos = subpath.first;
+    int endPos = subpath.second;
 
     // Copy part between start and end positions from first parent 1 to child
     for (int i = startPos; i <= endPos; ++i) {
@@ -175,9 +175,9 @@ Path TSPGenSolver::pmx(Path parent1, Path parent2) {
     child.setPoint(tsp.getSize(), 0);
 
     // Random subpath
-    pair<int, int> sub = randSubpath();
-    int startPos = sub.first;
-    int endPos = sub.second;
+    pair<int, int> subpath = randSubpath();
+    int startPos = subpath.first;
+    int endPos = subpath.second;
 
     // Create mapping array and it with -1
     auto mapping = new int[tsp.getSize() + 1];
@@ -230,9 +230,9 @@ Path TSPGenSolver::nwox(Path parent1, Path parent2) {
     child.setPoint(tsp.getSize(), 0);
 
     // Random subpath
-    pair<int, int> sub = randSubpath();
-    int startPos = sub.first;
-    int endPos = sub.second;
+    pair<int, int> subPath = randSubpath();
+    int startPos = subPath.first;
+    int endPos = subPath.second;
 
     // Already copied cities
     auto used = new bool[tsp.getSize() + 1];
@@ -357,14 +357,10 @@ void TSPGenSolver::mutation(Path &path) {
     uniform_int_distribution<int> range(1, tsp.getSize() - 1);
 
     // Randomly choose to points in path
-    int x = range(r);
-    int y;
-    do {
-        y = range(r);
-    } while (x == y);
+    pair<int, int> subpath = randSubpath();
 
     // Invert cities between these points
-    path.invert(x, y);
+    path.invert(subpath.first, subpath.second);
     path.setDistance(tsp.pathDist(path));
 }
 
