@@ -8,6 +8,7 @@
 #include "TSPBFSolver.h"
 #include "TSPBnBSolver.h"
 #include "TSPDPSolver.h"
+#include "TSPGenSolver.h"
 #include <chrono>
 
 using namespace std;
@@ -23,6 +24,7 @@ void repl() {
     TSPDPSolver DPSolver;
     TSPTabuSolver TSolver;
     TSPSimAnnealingSolver SASolver;
+    TSPGenSolver GASolver;
 
     cout << "\nAvailable commands:\n"
             "l [file]                   - Load TSP problem from file\n"
@@ -33,6 +35,7 @@ void repl() {
             "dp                         - Held-Karp algorithm (dynamic programming)\n"
             "t                          - Tabu Search\n"
             "sa                         - Simulated Annealing\n"
+            "ga                         - Genetic Algorithm\n"
             "q                          - Quit\n";
 
     string action;
@@ -115,6 +118,17 @@ void repl() {
                 SASolver.setTsp(tsp);
                 timeStart = high_resolution_clock::now();
                 result = SASolver.solve();
+                timeStop = high_resolution_clock::now();
+                time = duration_cast<duration<double>>(timeStop - timeStart);
+                cout << "Solution: " << result.toString() << endl << "Duration: " << time.count() << " s" << endl;
+            } catch (runtime_error &e) {
+                cerr << e.what() << endl;
+            }
+        } else if (command == "ga") {
+            try {
+                GASolver.setTsp(tsp);
+                timeStart = high_resolution_clock::now();
+                result = GASolver.solve();
                 timeStop = high_resolution_clock::now();
                 time = duration_cast<duration<double>>(timeStop - timeStart);
                 cout << "Solution: " << result.toString() << endl << "Duration: " << time.count() << " s" << endl;
